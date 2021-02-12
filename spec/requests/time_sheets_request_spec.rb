@@ -45,11 +45,71 @@ RSpec.describe "TimeSheets", type: :request do
       end
 
       context 'when creating timesheet for employee that does not exist' do
-        let(:employee_id) { 457849  }
+        let(:employee_id) { 457849 }
 
         it 'returns validation error' do
           expect(response.body).to match(/Couldn't find Employee with 'id'/)
         end
+      end
+    end
+  end
+
+  describe "View timesheet" do
+    let(:employee) { create(:employee) }
+    let(:employee_id) { employee.id }
+    let!(:timesheet) { create(:time_sheet, employee_id: employee_id) }
+    let(:timesheet_id) { timesheet.id }
+    
+    before { get "/employees/#{employee_id}/time_sheets/#{timesheet_id}" }
+
+    context "when timesheet exists" do
+      it 'returns 200 status code' do
+        expect(response).to have_http_status(200)
+      end
+      it 'returns timesheet' do
+        expect(json_response['id']).to eq(timesheet.id)
+        expect(json_response['employee_id']).to eq(timesheet.employee_id)
+      end
+    end
+
+    context 'when timesheet does not exist' do
+      let(:timesheet_id) { 532 }
+
+      it 'returns error' do
+        expect(response.body).to match(/Couldn't find TimeSheet with 'id'/)
+      end
+    end
+
+    describe 'Update timesheet' do
+      let(:timesheet_attribute) { { billable_rate: 500 } }
+
+      before { put "/employees/#{employee_id}/time_sheets/#{timesheet_id}", params: timesheet_attribute }
+
+      context 'when item exists' do
+        it 'returns status code 200' do
+          expect(response).to have_http_status(200)
+          expect(json_response['billiable_rate']).to eq(timesheet_attribute['billable_rate'])
+        end
+      end
+
+      context 'when timesheet does not exist' do
+        let(:timesheet_id) { 938 }
+
+        it 'return error' do
+          expect(response.body).to match(/Couldn't find TimeSheet with 'id'/)
+        end
+      end
+    end
+
+    describe 'Delete timesheet' do
+      before { delete "/employees/#{employee_id}/time_sheets/#{timesheet_id}" }
+
+      it 'returns status code 204' do
+        expect(response).to have_http_status(204)
+      end
+
+      it 'successfully deletes record' do
+        expect { TimeSheet.find(timesheet_id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
