@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_11_132958) do
+ActiveRecord::Schema.define(version: 2021_02_12_222016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 2021_02_11_132958) do
     t.bigint "employee_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["company"], name: "index_time_sheets_on_company"
     t.index ["employee_id"], name: "index_time_sheets_on_employee_id"
   end
 
