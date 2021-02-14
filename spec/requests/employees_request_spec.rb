@@ -6,8 +6,9 @@ RSpec.describe "Employees", type: :request do
   context "POST employee" do
     before { post "/employees", params: employee_attribute }
 
-    it 'returns status code 201' do
+    it 'successfully create an employee' do
       expect(response).to have_http_status(201)
+      expect(json_response['employee']['name']).to eq(employee_attribute[:name])
     end
   end
 end

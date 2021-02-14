@@ -1,4 +1,6 @@
 class InvoiceService
+  include Timeable
+
   attr_reader :timesheets
 
   SECONDS_TO_HOURS_RATIO = 3600
@@ -11,7 +13,7 @@ class InvoiceService
     total_cost = 0
 
     invoices = timesheets.map do |timesheet|
-      cost = timesheet_attributes(timesheet)[:unit_price] * number_of_hours(timesheet_attributes(timesheet)[:start_time], timesheet_attributes(timesheet)[:end_time])
+      cost = timesheet_cost(timesheet)
       total_cost += cost
 
       invoice(timesheet, cost)
@@ -31,8 +33,16 @@ class InvoiceService
     }
   end
 
+  def timesheet_cost(timesheet)
+    timesheet_attributes(timesheet)[:unit_price] *
+      number_of_hours(
+        timesheet_attributes(timesheet)[:start_time],
+        timesheet_attributes(timesheet)[:end_time]
+      )
+  end
+
   def number_of_hours(start_time, end_time)
-    (Time.parse(end_time.strftime('%H:%M')) - Time.parse(start_time.strftime('%H:%M')))/SECONDS_TO_HOURS_RATIO
+    (Time.parse(format_to_24_hour_time(end_time)) - Time.parse(format_to_24_hour_time(start_time)))/SECONDS_TO_HOURS_RATIO
   end
 
   def timesheet_attributes(timesheet)
