@@ -13,10 +13,10 @@ RSpec.describe "Invoices", type: :request do
   context "#generate" do
     let(:first_employee_cost) { first_employee_billable_rate * 8 }
     let(:second_employee_cost) { second_employee_billable_rate * 8 }
-    
+
     before { get "/invoices/#{company_name}" }
 
-    it 'returns total cost for each client for company' do
+    it 'returns a list of invoices and the total cost for all the invoices' do
       expect(json_response['total_cost'].to_f).to eq(first_employee_cost + second_employee_cost)
       expect(json_response['invoices'].size).to eq(company_related_timesheet.size)
     end

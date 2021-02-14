@@ -11,7 +11,7 @@ RSpec.describe InvoiceService do
     let(:number_of_hours_for_one_timesheet) { 8 }
     let(:cost_of_an_invoice) { number_of_hours_for_one_timesheet * billable_rate }
 
-    it 'returns an array of invoices and total cost' do
+    it 'returns an array of invoices and the total cost' do
       invoice, total_cost = subject.invoices_and_total_cost
 
       expect(subject.invoices_and_total_cost).to be_an_instance_of(Array)
