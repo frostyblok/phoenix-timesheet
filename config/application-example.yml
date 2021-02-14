@@ -1,0 +1,5 @@
+# 1. Create a config/application.yml file or create an application.yml file in the config folder
+# 2. create the 'db_username' and 'db_password' variables with your database configuration as shown below.
+
+db_username: '<Your database username here>'
+db_password: '<Your database password here>'
