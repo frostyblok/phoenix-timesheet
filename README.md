@@ -1,4 +1,5 @@
 # Billable Rate System
+![](https://github.com/frostyblok/phoenix-timesheet/workflows/CI/badge.svg)
 
 ### Table of Contents
 
