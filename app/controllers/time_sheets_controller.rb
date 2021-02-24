@@ -5,7 +5,15 @@ class TimeSheetsController < ApplicationController
   before_action :set_timesheet, except: [:create]
 
   def create
-    timesheet = @employee.time_sheets.create!(timesheet_params)
+    timesheet = ActiveRecord::Base.transaction do
+      timesheet = @employee.time_sheets.create!(timesheet_params)
+
+      timebreak_params["time_breaks"].keys.each do |key|
+        timesheet.time_breaks.create!(timebreak_params["time_breaks"][key])
+      end
+
+      timesheet
+    end
 
     render_timesheet(timesheet, :created)
   end
@@ -49,5 +57,9 @@ class TimeSheetsController < ApplicationController
 
   def timesheet_params
     params.permit(:billable_rate, :company, :date, :start_time, :end_time)
+  end
+
+  def timebreak_params
+    params.permit(time_breaks: %i[name start_time end_time])
   end
 end

@@ -8,10 +8,12 @@ RSpec.describe "Invoices", type: :request do
   let(:second_employee_billable_rate) { 300.0 }
   let!(:first_employee_timesheet) { create(:time_sheet, employee_id: first_employee.id, billable_rate: first_employee_billable_rate, company: company_name) }
   let!(:second_employee_timesheet) { create(:time_sheet, employee_id: second_employee.id, billable_rate: second_employee_billable_rate, company: company_name) }
+  let!(:first_employee_timebreak) { create(:time_break, time_sheet: first_employee_timesheet) }
   let(:company_related_timesheet) { [first_employee_timesheet, second_employee_timesheet] }
 
   context "#generate" do
-    let(:first_employee_cost) { first_employee_billable_rate * 8 }
+    let(:first_employee_breaktime_hour) { 1 }
+    let(:first_employee_cost) { first_employee_billable_rate * (8 - first_employee_breaktime_hour) }
     let(:second_employee_cost) { second_employee_billable_rate * 8 }
 
     before { get "/invoices/#{company_name}" }

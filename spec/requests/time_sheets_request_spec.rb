@@ -15,7 +15,23 @@ RSpec.describe "TimeSheets", type: :request do
           "end_time" => '17:00'
         }
       end
-      before { post "/employees/#{employee_id}/time_sheets", params: timesheet_attributes }
+      let(:timebreak_attributes) do
+        {
+          "time_breaks" => {
+            "0" => {
+            "name" => 'Lunch',
+            "start_time" => '12:00',
+            "end_time" => '13:00',
+            },
+            "1" => {
+              "name" => 'Gist',
+              "start_time" => '13:05',
+              "end_time" => '14:0',
+            },
+          }
+        }
+      end
+      before { post "/employees/#{employee_id}/time_sheets", params: timesheet_attributes.merge(timebreak_attributes) }
 
       context 'wtih valid timesheet attributes' do
 
@@ -44,6 +60,29 @@ RSpec.describe "TimeSheets", type: :request do
         end
       end
 
+      context 'when overlapping time' do
+        let(:timebreak_attributes) do
+          {
+            "time_breaks" => {
+              "0" => {
+                "name" => 'Lunch',
+                "start_time" => '22:00',
+                "end_time" => '23:00',
+              },
+              "1" => {
+                "name" => 'Gist',
+                "start_time" => '22:00',
+                "end_time" => '23:00',
+              },
+            }
+          }
+        end
+
+        it 'returns validation error' do
+          expect(response.body).to match(/Validation failed: Time breaks can't overlap/)
+        end
+      end
+
       context 'when creating timesheet for employee that does not exist' do
         let(:employee_id) { 457849 }
 
@@ -59,7 +98,7 @@ RSpec.describe "TimeSheets", type: :request do
     let(:employee_id) { employee.id }
     let!(:timesheet) { create(:time_sheet, employee_id: employee_id) }
     let(:timesheet_id) { timesheet.id }
-    
+
     before { get "/employees/#{employee_id}/time_sheets/#{timesheet_id}" }
 
     context "when timesheet exists" do
