@@ -66,13 +66,13 @@ RSpec.describe "TimeSheets", type: :request do
             "time_breaks" => {
               "0" => {
                 "name" => 'Lunch',
-                "start_time" => '22:00',
-                "end_time" => '23:00',
+                "start_time" => '10:00',
+                "end_time" => '11:00',
               },
               "1" => {
                 "name" => 'Gist',
-                "start_time" => '22:00',
-                "end_time" => '23:00',
+                "start_time" => '10:30',
+                "end_time" => '11:00',
               },
             }
           }
@@ -80,6 +80,24 @@ RSpec.describe "TimeSheets", type: :request do
 
         it 'returns validation error' do
           expect(response.body).to match(/Validation failed: Time breaks can't overlap/)
+        end
+      end
+
+      context 'when overlapping time' do
+        let(:timebreak_attributes) do
+          {
+            "time_breaks" => {
+              "0" => {
+                "name" => 'Lunch',
+                "start_time" => '22:00',
+                "end_time" => '23:00',
+              }
+            }
+          }
+        end
+
+        it 'returns validation error' do
+          expect(response.body).to match(/Validation failed: Time breaks must be between working hours/)
         end
       end
 
