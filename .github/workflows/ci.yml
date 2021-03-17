@@ -1,22 +1,22 @@
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
 name: CI
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   test:
     strategy:
       fail-fast: false
       matrix:
-        testpath: ["spec:sliced[0,10]",
-                   "spec:sliced[1,10]",
-                   "spec:sliced[2,10]",
-                   "spec:sliced[3,10]",
-                   "spec:sliced[4,10]",
-                   "spec:sliced[5,10]",
-                   "spec:sliced[6,10]",
-                   "spec:sliced[7,10]",
-                   "spec:sliced[8,10]",
-                   "spec:sliced[9,10]"]
+        testpath: ["spec:sliced[0,5]",
+                   "spec:sliced[1,5]",
+                   "spec:sliced[2,5]",
+                   "spec:sliced[3,5]",
+                   "spec:sliced[4,5]",
                    
     runs-on: ubuntu-latest
     services:
