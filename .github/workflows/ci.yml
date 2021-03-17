@@ -1,13 +1,7 @@
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
 name: CI
-on:
-  push:
-    branches:
-      - master
-      - develop
-  pull_request:
-    types: [opened, synchronize, reopened]
+on: [push, pull_request]
 jobs:
   test:
     strategy:
@@ -71,4 +65,4 @@ jobs:
           bundle exec rake db:create
           bundle exec rake db:schema:load
           bundle exec rake db:test:prepare
-          bundle exec rake spec
+          bundle exec rake ${{ matrix.testPath }
